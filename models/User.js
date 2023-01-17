@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: /[a-z0-9!#$%&'+/=?^_{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_{|}~-]+)@(?:a-z0-9?.)+a-z0-9?/,
+      match: /^([A-Za-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
     },
     thoughts: [
       {
@@ -38,11 +38,8 @@ const userSchema = new mongoose.Schema(
 userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
 const handleError = (err) => console.error(err);
-
-// - Create a virtual called friendCount that retrieves the length of the users friends array field on query
-// - CRUD operations can go here
 
 module.exports = User;
