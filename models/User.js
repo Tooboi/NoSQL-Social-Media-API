@@ -35,6 +35,25 @@ const userSchema = new Schema(
   },
 );
 
+
+
+userSchema.pre('save', function (next) {
+  User.find({ _id: { $ne: this._id } }, '_id', (err, friends) => {
+    if (err) handleError(err);
+    this.friends = friends.map((friend) => friend._id);
+    next();
+  });
+});
+
+// userSchema.pre('save', function (next) {
+//   Thought.find({ username: this._id }, (err, thoughts) => {
+//     if (err) handleError(err);
+//     this.thoughts = thoughts;
+//     next();
+//   });
+// });
+
+
 userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
